@@ -15,15 +15,24 @@ server.on("request", (req, res) => {
 
     const readableStream = fs.createReadStream(process.cwd() + "/read.txt");
 
-    //data listen and write buffer
+    //data listen and write buffer, এখানে data গুলো buffer আকারে আসতেছে।
     readableStream.on("data", (buffer) => {
+      res.statusCode(200);
       res.write(buffer);
     });
 
     //data read and write শেষ হলে ‘end’ event কল করে, callback এর মধ্যে response send করা হয়েছে।
     readableStream.on("end", () => {
+      res.statusCode(200);
       res.end("End Buffering");
     });
+    // এখানে error event listen করা হয়েছে যদি কোনো error পায় তখন সে এটা return করে দিবে।
+    readableStream.on("error", () => {
+      res.statusCode(500);
+      res.end("Something Went Wrong");
+    });
+
+    //
   }
 });
 
